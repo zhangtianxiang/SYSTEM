@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}腾创空间管理系统{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>你好, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}游客{% endif %}!</h1>
+</div>
+<h3>已有借用情况</h3>
+<ul class="agreements">
+    {%  for each in  agreements%}
+    {% if each.enable == True %}
+    <li class="agreement">
+        <h4>借用单号:{{ each.id }}</h4>
+        <div>借用组织:{{ each.org }}</div>
+        <div>联系方式:{{ each.tel }}</div>
+        <div>使用房间:{{ each.room.name }}</div>
+        <div>使用人数:{{ each.number }}</div>
+        <div>使用日期:{{ each.timeday }}</div>
+        <div>使用时间:{{ each.fromtime }}点~{{ each.totime }}点</div>
+        <div></div>
+    </li>
+    {% endif %}
+    {% endfor %}
+</ul>
+{% endblock %}
