@@ -1,25 +1,105 @@
 {% extends "base.html" %}
 
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    .tb-time{border:1px solid #ddd; height: 40px;line-height:40px;text-align:center;}
+    .tb-time-col{padding:0px !important; width: 16%;}
+    .tb-event{border:1px solid #ddd; text-align:center;}
+    .tb-event-col{padding:0px !important; width: 12%;}
+    .wk-wklabel{width: 12%;text-align:center;}
+    .wk-address{width: 16%;text-align:center;}
+    .tb-used{background-color: #A6E4FC;}
+    .tb-unused{background-color: #DFF0D8;}
+</style>
+{% endblock %}
+
 {% block title %}腾创空间管理系统{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <h1>你好, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}游客{% endif %}!</h1>
+    <h1>
+        你好, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}游客{% endif %}!
+    </h1>
 </div>
-<h3>已有借用情况</h3>
-<ul class="agreements">
+<div class="container">
+    <table class="table table-bordered" style="word-wrap: break-word; word-break:break-all;">
+        <thead>
+            <!-- 表头(日期) -->
+            <tr class="wk-daynames">
+                <td class="wk-address">
+                    茶室
+                </td>
+                {%  for i in range(7) %}
+                <th class="wk-wklabel">
+                    <div class="wk-dayname">
+                        {{ days[i][1] }}
+                    </div>
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="tb-time-col" valign="middle">
+                    <!-- 时间列 -->
+                    <div class="tb-time">
+                        08:00-09:00
+                    </div>
+                    <div class="tb-time">
+                        09:00-10:00
+                    </div>
+                    {% for i in range(10,22) %}
+                    <div class="tb-time">
+                        {{ i }}:00-{{ i+1 }}:00
+                    </div>
+                    {% endfor %}
+                </td>
+                {% for j in range(7) %}
+                <td class="tb-event-col">
+                    {% for i in event[j] %}
+                    {% if i[0] == True %}
+                    <div class="tb-event tb-used" style="height: {{ 40*(i[1].totime-i[1].fromtime) }}px;">
+                        {{ i[1].org }}
+                    </div>
+                    {% else %}
+                    <div class="tb-event tb-unused" style="height: {{ i[1]*40 }}px;">
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+<ul class="agreements media-list">
     {%  for each in  agreements%}
     {% if each.enable == True %}
-    <li class="agreement">
-        <h4>借用单号:{{ each.id }}</h4>
-        <div>借用组织:{{ each.org }}</div>
-        <div>联系方式:{{ each.tel }}</div>
-        <div>使用房间:{{ each.room.name }}</div>
-        <div>使用人数:{{ each.number }}</div>
-        <div>使用日期:{{ each.timeday }}</div>
-        <div>使用时间:{{ each.fromtime }}点~{{ each.totime }}点</div>
-        <div></div>
-    </li>
+    <div class="media">
+        <a class="pull-left">
+            <div style="font-size:90px; color:#ddd;/*#337ab7*/">
+                {{each.id}}
+            </div>
+        </a>
+        <div class="agreement media-body">
+            <h4 class="media-heading">
+                {{ each.room.name }}
+            </h4>
+            <p>
+                借用组织：{{ each.org }}
+            </p>
+            <p>
+                使用时间：{{ each.timeday }} {{ each.fromtime }}:00-{{ each.totime }}:00
+            </p>
+            <p>
+                使用人数：{{ each.number }}
+            </p>
+            <p>
+                联系方式：{{ each.tel }} (这里应当设为管理员可见)
+            </p>
+        </div>
+    </div>
     {% endif %}
     {% endfor %}
 </ul>
