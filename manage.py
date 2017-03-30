@@ -30,9 +30,11 @@ def init_test():
     db.create_all()
     Role.insert_roles()
     Room.insert_rooms()
+    print("wwwwwwwwwwwwwwwwwww")
     users = {
         "16300240019": "严佳雯",
-        "15307130371": "王佳羽"
+        "15307130371": "王佳羽",
+        "16307130026": "张天翔"
     }
     for id in users:
         user = User(urpid=id)
