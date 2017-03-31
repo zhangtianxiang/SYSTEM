@@ -28,6 +28,7 @@ def add():
         db.session.commit()
         commit=Commit(agreement_id=agreement.id,user_id=current_user.id)
         db.session.add(commit)
+        flash("借用成功！")
         return redirect(url_for('main.index'))
     commits=Commit.query.all()
     return render_template('commit/add.html',form=form,commits=commits)
