@@ -10,7 +10,7 @@
     .wk-wklabel{width: 12%;text-align:center;}
     .wk-address{width: 16%;text-align:center;}
     .tb-used{background-color: #5cb85c;color:#fff;font-size:20px;}
-    .tb-unused{border:1px solid #ddd;/*background-color: #cdf;*/}
+    .tb-unused{border:1px solid #ddd;}
 </style>
 {% endblock %}
 
@@ -23,185 +23,162 @@
     </h1>
 </div>
 <!-- -->
-<div class="tabbable tabs-left">
+<div class="tabbable">
+<div class="nav">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a data-toggle="tab" href="#jyd">
-                借用单
-            </a>
+            <a data-toggle="tab" href="#by_room">按房间查看借用情况</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#cs">
-                茶室
-            </a>
-        </li>
-        <li>
-            <a data-toggle="tab" href="#dgns">
-                多功能室
-            </a>
-        </li>
-        <li>
-            <a data-toggle="tab" href="#hys">
-                会议室
-            </a>
-        </li>
-        <li>
-            <a data-toggle="tab" href="#kckj">
-                科创空间
-            </a>
+            <a data-toggle="tab" href="#by_date">按日期查看借用情况</a>
         </li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="jyd">
-<ul class="agreements media-list" style="margin-top:20px;">
-    {%  for each in  agreements%}
-    {% if each.enable == True %}
+        <div class="tab-pane fade in active" id="by_room">
+
+            <div class="nav well">
+                <ul class="nav nav-tabs">
+                    {% for mark in marks %}
+                    <li >
+                        <a data-toggle="tab" href="#by_room_{{ mark[0].id }}">{{ mark[0].name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    {% for mark in marks %}
+                    <div class="tab-pane fade" id="by_room_{{ mark[0].id }}">
+                            <table class="table table-bordered" style="word-wrap: break-word; word-break:break-all; border:3px solid; border-color:#ddd;">
+                                <thead>
+                                    <tr class="wk-daynames">
+                                        <td class="wk-address" style="font-size:20px;font-weight:bold;">{{ mark[0].name }}</td>
+                                        {%  for i in range(7) %}
+                                        <th class="wk-wklabel">
+                                            <div class="wk-dayname">{{ days[i][1] }}</div>
+                                        </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="tb-time-col" valign="middle">
+                                            <div class="tb-time">08:00-09:00</div>
+                                            <div class="tb-time">09:00-10:00</div>
+                                            {% for i in range(10,22) %}
+                                            <div class="tb-time">{{ i }}:00-{{ i+1 }}:00</div>
+                                            {% endfor %}
+                                        </td>
+                                        {% for j in range(7) %}
+                                        <td class="tb-event-col">
+                                            {% for i in mark[1][j] %}
+                                            {% if i[0] == True %}
+                                            <div class="tb-event tb-used" style="height: {{ 40*(i[1].totime-i[1].fromtime) }}px;">{{ i[1].org }}</div>
+                                            {% else %}
+                                            {% for k in range(i[1]) %}
+                                            <div class="tb-event tb-unused" style="height: 40px;">
+                                            </div>
+                                            {% endfor %}
+                                            {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        {% endfor %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="by_date">
+
+            <div class="nav well">
+                <ul class="nav nav-tabs">
+                    {% for k in range(7) %}
+                    <li >
+                        <a data-toggle="tab" href="#by_date_{{ k }}">{{ days[k][1] }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                        {% for k in range(7) %}
+                    <div class="tab-pane fade" id="by_date_{{ k }}">
+                        <table class="table table-bordered" style="word-wrap: break-word; word-break:break-all; border:3px solid; border-color:#ddd;">
+                                <thead>
+                                    <tr class="wk-daynames">
+                                        <td class="wk-address" style="font-size:20px;font-weight:bold;">{{ days[k][1] }}</td>
+                                        {%  for i in marks %}
+                                        <th class="wk-wklabel">
+                                            <div class="wk-dayname">{{ i[0].name }}</div>
+                                        </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="tb-time-col" valign="middle">
+                                            <div class="tb-time">08:00-09:00</div>
+                                            <div class="tb-time">09:00-10:00</div>
+                                            {% for i in range(10,22) %}
+                                            <div class="tb-time">{{ i }}:00-{{ i+1 }}:00</div>
+                                            {% endfor %}
+                                        </td>
+                                        {% for mark in marks %}
+                                            <td class="tb-event-col">
+                                                {% for i in mark[1][k] %}
+                                                {% if i[0] == True %}
+                                                <div class="tb-event tb-used" style="height: {{ 40*(i[1].totime-i[1].fromtime) }}px;">{{ i[1].org }}</div>
+                                                {% else %}
+                                                {% for j in range(i[1]) %}
+                                                <div class="tb-event tb-unused" style="height: 40px;">
+                                                </div>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+<h1>借用单（以后会放在管理页面中显示）</h1>
+<ul class="media-list" style="margin-top:20px;">
+    {%  for agr in agrs%}
+    {% if agr.enable == True %}
     <div class="media">
         <a class="pull-left">
             <div style="font-size:90px; color:#ddd;">
-                {{each.id}}
+                {{agr.id}}
             </div>
         </a>
         <div class="agreement media-body">
             <h4 class="media-heading">
-                {{ each.room.name }}
+                {{ agr.room.name }}
             </h4>
             <p>
-                借用组织：{{ each.org }}
+                借用组织：{{ agr.org }}
             </p>
             <p>
-                使用时间：{{ each.timeday }} {{ each.fromtime }}:00-{{ each.totime }}:00
+                使用时间：{{ agr.timeday }} {{ agr.fromtime }}:00-{{ agr.totime }}:00
             </p>
             <p>
-                使用人数：{{ each.number }}
+                使用人数：{{ agr.number }}
             </p>
             <p>
-                联系方式：{{ each.tel }} (这里应当设为管理员可见)
+                联系方式：{{ agr.tel }} (这里应当设为管理员可见)
             </p>
         </div>
     </div>
     {% endif %}
     {% endfor %}
 </ul>
-        </div>
-        <div class="tab-pane fade" id="cs">
-            <div class="container">
-                <table class="table table-bordered" style="word-wrap: break-word; word-break:break-all;">
-                    <thead>
-                        <tr class="wk-daynames">
-                            <td class="wk-address" style="font-size:20px;font-weight:bold;">
-                                茶室
-                            </td>
-                            {%  for i in range(7) %}
-                            <th class="wk-wklabel">
-                                <div class="wk-dayname">
-                                    {{ days[i][1] }}
-                                </div>
-                            </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="tb-time-col" valign="middle">
-                                <div class="tb-time">
-                                    08:00-09:00
-                                </div>
-                                <div class="tb-time">
-                                    09:00-10:00
-                                </div>
-                                {% for i in range(10,22) %}
-                                <div class="tb-time">
-                                    {{ i }}:00-{{ i+1 }}:00
-                                </div>
-                                {% endfor %}
-                            </td>
-                            {% for j in range(7) %}
-                            <td class="tb-event-col">
-                                {% for i in event[j] %}
-                    {% if i[0] == True %}
-                                <div class="tb-event tb-used" style="height: {{ 40*(i[1].totime-i[1].fromtime) }}px;">
-                                    {{ i[1].org }}
-                                </div>
-                                {% else %}
-                    {% for j in range(i[1]) %}
-                                <div class="tb-event tb-unused" style="height: 40px;">
-                                </div>
-                                {% endfor %}
-                    {% endif %}
-                    {% endfor %}
-                            </td>
-                            {% endfor %}
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="dgns">
-            <p>I'm in section B.</p>
-        </div>
-        <div class="tab-pane fade" id="hys">
-            <p>I'm in section C.</p>
-        </div>
-        <div class="tab-pane fade" id="kckj">
-            <p>I'm in section D.</p>
-        </div>
-    </div>
-</div>
-<!--
-
-            <div class="container">
-                <table class="table table-bordered" style="word-wrap: break-word; word-break:break-all;">
-                    <thead>
-                        <tr class="wk-daynames">
-                            <td class="wk-address" style="font-size:20px;font-weight:bold;">
-                                茶室
-                            </td>
-                            {%  for i in range(7) %}
-                            <th class="wk-wklabel">
-                                <div class="wk-dayname">
-                                    {{ days[i][1] }}
-                                </div>
-                            </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="tb-time-col" valign="middle">
-                                <div class="tb-time">
-                                    08:00-09:00
-                                </div>
-                                <div class="tb-time">
-                                    09:00-10:00
-                                </div>
-                                {% for i in range(10,22) %}
-                                <div class="tb-time">
-                                    {{ i }}:00-{{ i+1 }}:00
-                                </div>
-                                {% endfor %}
-                            </td>
-                            {% for j in range(7) %}
-                            <td class="tb-event-col">
-                                {% for i in event[j] %}
-                    {% if i[0] == True %}
-                                <div class="tb-event tb-used" style="height: {{ 40*(i[1].totime-i[1].fromtime) }}px;">
-                                    {{ i[1].org }}
-                                </div>
-                                {% else %}
-                    {% for j in range(i[1]) %}
-                                <div class="tb-event tb-unused" style="height: 40px;">
-                                </div>
-                                {% endfor %}
-                    {% endif %}
-                    {% endfor %}
-                            </td>
-                            {% endfor %}
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
--->
-
-
 {% endblock %}
