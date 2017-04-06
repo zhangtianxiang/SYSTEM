@@ -5,8 +5,8 @@ from . import commit
 from flask_login import current_user
 from ..models import Permission,Agreement,Commit,Room
 from datetime import datetime,timedelta
-@commit.route('/add', methods=['GET', 'POST'])
-def add():
+@commit.route('/manage', methods=['GET', 'POST'])
+def manage():
     form = AgreementForm()
     form.room.choices = [(r.id,r.name) for r in Room.query.all()]
     today = datetime.today()
@@ -28,7 +28,8 @@ def add():
         db.session.commit()
         commit=Commit(agreement_id=agreement.id,user_id=current_user.id)
         db.session.add(commit)
-        flash("借用成功！")
-        return redirect(url_for('main.index'))
+        flash("增加借用成功！")
+        return redirect(url_for('commit.manage'))
     commits=Commit.query.all()
-    return render_template('commit/add.html',form=form,commits=commits)
+    agrs=Agreement.query.all()
+    return render_template('commit/manage.html',form=form,commits=commits,agrs=agrs)

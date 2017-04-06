@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}腾创空间管理系统 - 借用{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    .myblock{
+        border:1px solid #337AB7; border-radius: 8px 8px 8px 8px;
+        margin:0px 0px 0px 0px;
+        padding:10px 10px 10px 10px;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>管理</h1>
+</div>
+<div class="container">
+<div class="row">
+    <div class="col-md-5">
+        <div class="myblock">
+            <h3 style="text-align: center;">新增借用</h3>
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="myblock">
+            <h3 style="text-align: center;">查询借用</h3>
+            <ul class="media-list" style="margin-top:20px;">
+                {%  for agr in agrs%}
+                {% if agr.enable == True %}
+                <div class="media" style="border:1px solid #ddd; border-radius: 5px 5px 5px 5px; padding:10px 10px 10px 10px;">
+                    <a class="pull-left">
+                        <div style="font-size:90px; color:#DDD;">
+                            {{agr.id}}
+                        </div>
+                    </a>
+                    <div class="agreement media-body">
+                        <h4 class="media-heading">
+                            {{ agr.room.name }}
+                            {% if agr.enable == False %}
+                            <a href="#" class="btn btn-sm disabled">已删除</a>
+                            <button class="btn btn-sm btn-warning btn-block" type="button">恢复</button>
+                            {% else %}
+                            <button class="btn btn-sm btn-info" type="button">修改</button>
+                            <button class="btn btn-sm btn-danger" type="button">删除</button>
+                            {% endif %}
+                        </h4>
+                        <p>
+                            借用组织：{{ agr.org }}
+                        </p>
+                        <p>
+                            使用时间：{{ agr.timeday }} {{ agr.fromtime }}:00-{{ agr.totime }}:00
+                        </p>
+                        <p>
+                            使用人数：{{ agr.number }}
+                        </p>
+                        <p>
+                            借用人　：此处应显示借用人
+                        </p>
+                        <p>
+                            联系方式：{{ agr.tel }}
+                        </p>
+                        <p>
+                            创建人　：此处应显示创建人
+                        </p>
+                        {% if agr.enable == False %}
+                        <p>
+                            删除人　：此处应显示删除人
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
